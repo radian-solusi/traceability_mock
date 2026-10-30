@@ -64,24 +64,41 @@ jobs:
           docker save "$IMAGE_NAME:$GITHUB_SHA" | gzip | $SSH "gunzip | docker load"
 
           echo "Switching container..."
-          $SSH "set -e
-            PREV=\$(docker inspect -f '{{.Config.Image}}' $CONTAINER_NAME 2>/dev/null || true)
-            docker rm -f $CONTAINER_NAME >/dev/null 2>&1 || true
-            docker run -d --name $CONTAINER_NAME --restart unless-stopped \
-              -p $HOST_PORT:80 $IMAGE_NAME:$GITHUB_SHA
-            ok=0
-            for i in \$(seq 1 20); do
-              if curl -fsS http://127.0.0.1:$HOST_PORT/healthz >/dev/null; then ok=1; break; fi
-              sleep 1
-            done
-            if [ \$ok -ne 1 ]; then
-              echo 'Health check failed, rolling back'
-              docker logs $CONTAINER_NAME || true
-              docker rm -f $CONTAINER_NAME || true
-              if [ -n \"\$PREV\" ]; then
-                docker run -d --name $CONTAINER_NAME --restart unless-stopped -p $HOST_PORT:80 \$PREV
-              fi
-              exit 1
+          $SSH "bash -s -- '$CONTAINER_NAME' '$IMAGE_NAME' '$GITHUB_SHA' '$HOST_PORT'" <<'REMOTE'
+          set -u
+          NAME=$1; IMAGE=$2; TAG=$3; PORT=$4
+          NEW="$IMAGE:$TAG"
+
+          # Remember the image of the currently RUNNING container (if any) for rollback
+          PREV=""
+          if [ "$(docker inspect -f '{{.State.Running}}' "$NAME" 2>/dev/null)" = "true" ]; then
+            PREV=$(docker inspect -f '{{.Config.Image}}' "$NAME")
+          fi
+          docker rm -f "$NAME" >/dev/null 2>&1 || true
+
+          rollback() {
+            echo "Deploy failed, rolling back"
+            docker logs "$NAME" 2>&1 | tail -30 || true
+            docker rm -f "$NAME" >/dev/null 2>&1 || true
+            if [ -n "$PREV" ]; then
+              docker run -d --name "$NAME" --restart unless-stopped -p "127.0.0.1:$PORT:80" "$PREV" >/dev/null \
+                && echo "Rolled back to $PREV"
             fi
-            docker tag $IMAGE_NAME:$GITHUB_SHA $IMAGE_NAME:latest
-            docker image prune -f >/dev/null"
+            exit 1
+          }
+
+          # Bound to loopback only: public access goes through the host nginx (HTTPS)
+          docker run -d --name "$NAME" --restart unless-stopped \
+            -p "127.0.0.1:$PORT:80" "$NEW" >/dev/null || rollback
+
+          ok=0
+          for i in $(seq 1 20); do
+            if curl -fsS "http://127.0.0.1:$PORT/healthz" >/dev/null 2>&1; then ok=1; break; fi
+            sleep 1
+          done
+          [ "$ok" -eq 1 ] || rollback
+
+          docker tag "$NEW" "$IMAGE:latest"
+          docker image prune -f >/dev/null
+          echo "Deployed $NEW"
+          REMOTE
