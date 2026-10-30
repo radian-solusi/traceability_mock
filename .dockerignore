@@ -1,0 +1,10 @@
+node_modules
+dist
+dist-demo
+.git
+.github
+.vscode
+docs
+*.local
+.env.local
+npm-debug.log*

@@ -1,0 +1,87 @@
+name: Build & Deploy
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+concurrency:
+  group: deploy-${{ github.ref }}
+  cancel-in-progress: false
+
+env:
+  IMAGE_NAME: traceability-mock
+  CONTAINER_NAME: traceability-mock
+  # Port on the VPS mapped to nginx :80. Set repo variable HOST_PORT (Settings > Secrets and variables > Actions > Variables) to override.
+  HOST_PORT: ${{ vars.HOST_PORT || '8080' }}
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: docker/setup-buildx-action@v3
+
+      - name: Build image
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          load: true
+          tags: |
+            ${{ env.IMAGE_NAME }}:${{ github.sha }}
+            ${{ env.IMAGE_NAME }}:latest
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+      - name: Smoke test image
+        run: |
+          docker run -d --name smoke -p 18080:80 "$IMAGE_NAME:$GITHUB_SHA"
+          for i in $(seq 1 15); do
+            curl -fsS http://127.0.0.1:18080/healthz && curl -fsS http://127.0.0.1:18080/ >/dev/null && exit 0
+            sleep 1
+          done
+          docker logs smoke
+          exit 1
+
+      - name: Deploy to VPS over SSH
+        if: github.event_name != 'pull_request'
+        env:
+          SSH_USER: ${{ secrets.SSH_USER }}
+          SSH_HOST: ${{ secrets.SSH_HOST }}
+          SSHPASS: ${{ secrets.SSH_PASSWORD }}
+        run: |
+          sudo apt-get update -qq && sudo apt-get install -y -qq sshpass
+          mkdir -p ~/.ssh && chmod 700 ~/.ssh
+          ssh-keyscan -H "$SSH_HOST" >> ~/.ssh/known_hosts
+
+          SSH="sshpass -e ssh -o PreferredAuthentications=password -o PubkeyAuthentication=no -o ServerAliveInterval=30 $SSH_USER@$SSH_HOST"
+
+          echo "Uploading image..."
+          docker save "$IMAGE_NAME:$GITHUB_SHA" | gzip | $SSH "gunzip | docker load"
+
+          echo "Switching container..."
+          $SSH "set -e
+            PREV=\$(docker inspect -f '{{.Config.Image}}' $CONTAINER_NAME 2>/dev/null || true)
+            docker rm -f $CONTAINER_NAME >/dev/null 2>&1 || true
+            docker run -d --name $CONTAINER_NAME --restart unless-stopped \
+              -p $HOST_PORT:80 $IMAGE_NAME:$GITHUB_SHA
+            ok=0
+            for i in \$(seq 1 20); do
+              if curl -fsS http://127.0.0.1:$HOST_PORT/healthz >/dev/null; then ok=1; break; fi
+              sleep 1
+            done
+            if [ \$ok -ne 1 ]; then
+              echo 'Health check failed, rolling back'
+              docker logs $CONTAINER_NAME || true
+              docker rm -f $CONTAINER_NAME || true
+              if [ -n \"\$PREV\" ]; then
+                docker run -d --name $CONTAINER_NAME --restart unless-stopped -p $HOST_PORT:80 \$PREV
+              fi
+              exit 1
+            fi
+            docker tag $IMAGE_NAME:$GITHUB_SHA $IMAGE_NAME:latest
+            docker image prune -f >/dev/null"
