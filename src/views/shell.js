@@ -11,6 +11,8 @@ import { unackedCount, activeAlarms } from '../core/alarms.js';
 import { integrationHealth } from '../core/integrations.js';
 import { esc, fmtTime, fmtAgo, initials, shiftOf } from '../core/format.js';
 import { env } from '../config/env.js';
+import logoUrl from '../assets/ptct-logo.png';
+import emblemUrl from '../assets/ptct-emblem.png';
 
 const NAV_GROUPS = [
   { id: 'grp-dash', value: 'Dashboards', icon: 'mdi mdi-view-dashboard-outline' },
@@ -152,7 +154,8 @@ function userHtml() {
 }
 
 function brandHtml(collapsed) {
-  return `<div class="brand"><span class="brand-mark"><i class="mdi mdi-pipe"></i></span>${collapsed ? '' : '<span><div class="brand-name">PipeTrack</div><div class="brand-sub">PTCT traceability</div></span>'}</div>`;
+  if (collapsed) return `<div class="brand brand-collapsed"><span class="brand-plate"><img src="${emblemUrl}" alt="PT Citra Tubindo Tbk"></span></div>`;
+  return `<div class="brand"><span class="brand-plate wide"><img src="${logoUrl}" alt="PT Citra Tubindo Tbk · Vallourec Group"></span></div>`;
 }
 
 function footHtml(collapsed) {
@@ -312,7 +315,7 @@ export function renderShell() {
         id: 'nav-col',
         css: 'nav-col',
         rows: [
-          { view: 'template', id: 'nav-brand', css: 'nav-brand', height: 56, borderless: true, template: () => brandHtml(webix.$$('nav')?.config.collapsed) },
+          { view: 'template', id: 'nav-brand', css: 'nav-brand', height: 64, borderless: true, template: () => brandHtml(webix.$$('nav')?.config.collapsed) },
           {
             view: 'sidebar',
             id: 'nav',

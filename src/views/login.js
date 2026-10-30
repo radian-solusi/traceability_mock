@@ -4,6 +4,7 @@ import { db, getStation } from '../core/db.js';
 import { login } from '../core/session.js';
 import { esc } from '../core/format.js';
 import { env } from '../config/env.js';
+import logoUrl from '../assets/ptct-logo.png';
 
 const DEMO = [
   { username: 'budi.santoso', desktop: 'OPS-SEA-01', label: 'Operator', who: 'Budi Santoso · SEA East display' },
@@ -17,9 +18,8 @@ let resizeHandler = null;
 function brandPanel() {
   return `<div class="lb">
     <div class="lb-top">
-      <div class="brand" style="padding:0"><span class="brand-mark"><i class="mdi mdi-pipe"></i></span><span><div class="brand-name">PipeTrack</div><div class="brand-sub">${esc(env.plant)}</div></span></div>
-      <div class="lb-title">Every pipe, every station, <span>one record.</span></div>
-      <div class="lb-text">Data Matrix identification at each process point of the HT finishing line: scanner reads through PLC and Kepware OPC (or directly when the PLC path fails), operator confirmation when a read fails, Good / NC results sent to CTMS through CT-Track.</div>
+      <div class="lb-logo"><img src="${logoUrl}" alt="PT Citra Tubindo Tbk · Vallourec Group"></div>
+      <div class="lb-app">PipeTrack <span>· pipe traceability · ${esc(env.plant)}</span></div>
       <div class="lb-flow"><span>Limab</span><i class="mdi mdi-chevron-right"></i><span>SEA E/W</span><i class="mdi mdi-chevron-right"></i><span>EMI prove-up</span><i class="mdi mdi-chevron-right"></i><span>WMS</span><i class="mdi mdi-chevron-right"></i><span>Hydrotest</span><i class="mdi mdi-chevron-right"></i><span>PAUT</span><i class="mdi mdi-chevron-right"></i><span>Finish</span></div>
     </div>
     <div class="lb-foot"><span>Front-end mock · simulated data, no backend</span><span>v${esc(env.version)}</span></div>
@@ -63,7 +63,7 @@ export function renderLogin({ onLogin }) {
                 padding: 26,
                 margin: 12,
                 elements: [
-                  { view: 'template', borderless: true, height: 64, template: `<div class="lf-head"><div class="lf-title">Sign in</div><div class="lf-sub">${esc(env.ldapDomain)} Active Directory account · the application never stores your password</div></div>` },
+                  { view: 'template', borderless: true, autoheight: true, template: `<div class="lf-head"><img class="lf-logo" width="240" height="48" src="${logoUrl}" alt="PT Citra Tubindo Tbk · Vallourec Group"><div class="lf-title">Sign in</div><div class="lf-sub">${esc(env.ldapDomain)} Active Directory account · the application never stores your password</div></div>` },
                   { view: 'text', name: 'username', id: 'login-user', label: 'Username', labelPosition: 'top', placeholder: `${env.ldapDomain}\\username` },
                   { view: 'text', name: 'password', type: 'password', label: 'Password', labelPosition: 'top', placeholder: 'Any password works in the mock' },
                   { view: 'richselect', name: 'desktop', label: 'Workstation', labelPosition: 'top', value: 'OPS-SEA-01', options: desktops, tooltip: 'Station display PCs are bound to a process point (Parameters → Servers & desktops)' },

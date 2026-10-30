@@ -95,7 +95,7 @@ Status:
 |---|---|---|---|
 | F1 | Product name **PipeTrack** and the three main pages: each station, operator view, supervisor view. | 7061 dashboard section. | Confirmed |
 | F2 | The UI is in **English**; Indonesian labels from the mockup are translated. Webix has a Bahasa Indonesia locale if needed. | Not stated. | Open |
-| F3 | No PTCT or Vallourec logo (the mockup shows a “COMPANY LOGO” placeholder). | – | Open |
+| F3 | The **PT Citra Tubindo Tbk · Vallourec Group** logo (supplied by Radian) is used in the navigation, the login page and the browser tab; PipeTrack stays the application name. | Logo provided by the user on 2026-10-30. | Confirmed |
 | F4 | Targets: Microsoft Edge on Windows 11, 24" touch station displays, supervisor desktops, a wall TV. Tablets work; phones are not a target. | RFQ, 7061. | Open |
 | F5 | The HT plant layout is a **schematic**, not a scaled drawing. | Plant-layout slide. | Open |
 | F6 | Use-case numbers follow Rev 1 (UC-001 … UC-005); the older numbering from the first use-case screenshots is retired. | Rev 1. | Confirmed |
