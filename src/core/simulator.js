@@ -241,7 +241,7 @@ export function releaseNextDmcBatch({ count = 6, actor, toast, woId, withDuplica
   const pipes = Array.from({ length: n }, (_, k) => pipeSpec(up.id, up.product, released + k + 1));
   if (withDuplicate) {
     const dup = db.pipes.filter((p) => p.stage !== STAGE.FINISHED).slice(-1)[0];
-    if (dup) pipes.push({ pn: 900 + Math.floor(Math.random() * 99), heat: dup.heat, lengthM: dup.lengthM, weightKg: dup.weightKg, dmc: dup.dmc });
+    if (dup) pipes.push({ pn: 900 + Math.floor(Math.random() * 99), dmc: dup.dmc });
   }
   const deadline = startOfDay() + (up.deadlineDays || 7) * 86400e3 + 17 * 3600e3;
   const batch = receiveDmcBatch({ woId: up.id, salesOrder: up.salesOrder, product: up.product, qty: up.qty, deadline, pipes }, { actor, toast });

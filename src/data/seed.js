@@ -86,16 +86,10 @@ export function pickDefect(processType, rand = Math.random) {
   return list.length ? list[Math.floor(rand() * list.length)].id : null;
 }
 
-export function heatFor(woId, pn) {
-  const n = Number(woId.slice(-3));
-  const letter = 'ABCDEFGHJK'[(n + Math.floor((pn - 1) / 10)) % 10];
-  return `H6${letter}${String(200 + ((n * 37 + Math.floor((pn - 1) / 10) * 11) % 700)).padStart(3, '0')}`;
-}
-
+/** Pipe entry of a DMC batch. Only the pipe number: the documents list no other per-pipe fields. */
 export function pipeSpec(woId, product, pn, rand = Math.random) {
-  const lengthM = +(11.55 + rand() * 0.85).toFixed(2);
-  const ppf = parseFloat(product.weight) || 30;
-  return { pn, heat: heatFor(woId, pn), lengthM, weightKg: Math.round(ppf * lengthM * 3.28084 * 0.453592) };
+  rand(); // keeps the seeded sequence (and so the demo plant) the same as before the field removal
+  return { pn };
 }
 
 const FOCUS_FOR_OD = { '13 3/8"': 350, '9 5/8"': 410, '7"': 455, '4 1/2"': 505, '3 1/2"': 520 };
@@ -293,7 +287,7 @@ function replay(actions, nowTs, rand) {
           if (!dupDone && spec.woId === 'WHT26119') {
             const prev = db.pipes.find((p) => p.wo === 'WHT26118' && p.pn === 12);
             if (prev) {
-              spec.pipes.push({ pn: 950, heat: prev.heat, lengthM: prev.lengthM, weightKg: prev.weightKg, dmc: prev.dmc });
+              spec.pipes.push({ pn: 950, dmc: prev.dmc });
               dupDone = true;
               const batchTs = a.ts;
               receiveDmcBatch(spec, base);

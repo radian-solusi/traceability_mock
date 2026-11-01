@@ -139,7 +139,7 @@ export default {
     const go = () => {
       const p = findPipe(webix.$$('trace-q').getValue());
       if (!p) {
-        webix.message({ type: 'error', text: 'No pipe matches. Try a DMC code like WHT26119-012-H6B425, or “WHT26119 12”.' });
+        webix.message({ type: 'error', text: 'No pipe matches. Try a DMC code like WHT26119-012, or “WHT26119 12”.' });
         return;
       }
       ctx.go('trace', p.id);

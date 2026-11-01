@@ -206,7 +206,7 @@ function updateExisting(tx, ev, pipe, method, actor) {
 // UC-001 Manage barcode pipe master data (DMC API; pipe information from CTMS via CT-Track)
 // ---------------------------------------------------------------------------
 /**
- * spec: { woId, salesOrder, product, qty, deadline, routeId, pipes: [{ pn, heat, lengthM, weightKg, dmc? }] }
+ * spec: { woId, salesOrder, product, qty, deadline, routeId, pipes: [{ pn, dmc? }] }  (DMC defaults to WO-PN, assumption B9)
  */
 export function receiveDmcBatch(spec, opts = {}) {
   const ts = opts.ts ?? now();
@@ -232,7 +232,7 @@ export function receiveDmcBatch(spec, opts = {}) {
   const rejected = [];
   for (const p of spec.pipes) {
     const id = `${wo.id}-${pad(p.pn, 3)}`;
-    const dmc = p.dmc || `${wo.id}-${pad(p.pn, 3)}-${p.heat}`;
+    const dmc = p.dmc || `${wo.id}-${pad(p.pn, 3)}`;
     const existing = getPipeByDmc(dmc) || getPipe(id);
     if (existing) {
       // FR-006 duplicate DMC: the code is already registered → exception, pipe not created again
@@ -247,9 +247,6 @@ export function receiveDmcBatch(spec, opts = {}) {
       dmc,
       wo: wo.id,
       pn: p.pn,
-      heat: p.heat,
-      lengthM: p.lengthM,
-      weightKg: p.weightKg,
       status: 'PENDING',
       limabFlag: null,
       stage: STAGE.QUEUED,
