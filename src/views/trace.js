@@ -27,7 +27,7 @@ function recentPicks() {
 function introHtml() {
   const picks = recentPicks();
   return `<div style="padding:18px;display:flex;flex-direction:column;gap:14px">
-    ${emptyState('mdi-timeline-text-outline', 'Find a pipe', 'Search by DMC code, work order + pipe number (e.g. WHT26119 PN 12), or heat number. Or pick a pipe that moved recently:')}
+    ${emptyState('mdi-timeline-text-outline', 'Find a pipe', 'Search by DMC code, or work order + pipe number (e.g. WHT26119 PN 12). Or pick a pipe that moved recently:')}
     <div style="display:flex;flex-wrap:wrap;gap:8px;justify-content:center">${picks.map((p) => `<span class="trace-pick" data-id="${esc(p.id)}" style="cursor:pointer">${pipeChip(p)}<span class="mono muted" style="font-size:11.5px">${esc(p.wo)}</span></span>`).join('')}</div>
   </div>`;
 }
@@ -205,7 +205,7 @@ export default {
           height: 60,
           paddingX: 14,
           elements: [
-            { view: 'search', id: 'trace-q', placeholder: 'DMC code, “WHT26119 12”, or heat number', width: 420, value: pipeId ? getPipe(pipeId).dmc : '', on: { onEnter: go, onSearchIconClick: go } },
+            { view: 'search', id: 'trace-q', placeholder: 'DMC code or “WHT26119 12”', width: 420, value: pipeId ? getPipe(pipeId).dmc : '', on: { onEnter: go, onSearchIconClick: go } },
             { view: 'button', value: 'Trace pipe', css: 'webix_primary', width: 120, click: go },
             {},
             pipeId ? { view: 'label', label: `<span class="muted">Record id <span class="mono">${esc(pipeId)}</span></span>`, autowidth: true } : { width: 1 },

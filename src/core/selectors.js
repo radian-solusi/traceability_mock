@@ -365,7 +365,7 @@ export function searchPipes(q, limit = 20) {
   if (!s) return [];
   const pn = s.replace(/^pn\s*/, '');
   return db.pipes
-    .filter((p) => p.dmc.toLowerCase().includes(s) || p.id.toLowerCase().includes(s) || p.wo.toLowerCase() === s || String(p.pn) === pn || p.heat.toLowerCase() === s)
+    .filter((p) => p.dmc.toLowerCase().includes(s) || p.id.toLowerCase().includes(s) || p.wo.toLowerCase() === s || String(p.pn) === pn)
     .slice(0, limit);
 }
 

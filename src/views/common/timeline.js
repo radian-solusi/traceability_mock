@@ -33,8 +33,6 @@ export function pipeHeaderHtml(pipeId) {
         <div class="fact"><span>DMC</span><b class="mono">${esc(p.dmc)}</b></div>
         <div class="fact"><span>Work order</span><b class="mono">${esc(p.wo)}</b></div>
         <div class="fact"><span>Product</span><b>${esc(wo ? `${wo.product.od} ${wo.product.weight} ${wo.product.grade} ${wo.product.end}` : '–')}</b></div>
-        <div class="fact"><span>Heat</span><b class="mono">${esc(p.heat)}</b></div>
-        <div class="fact"><span>Length / weight</span><b>${p.lengthM.toFixed(2)} m · ${p.weightKg} kg</b></div>
         <div class="fact"><span>Limab status flag</span><b>${flag ? `${pill(flag)}${limab?.direction ? ` <span class="muted" style="font-size:12px">${limab.direction === 'LEFT' ? '← left' : 'right →'}</span>` : ' <span class="muted" style="font-size:12px">prepared</span>'}` : '<span class="muted">not set</span>'}</b></div>
         <div class="fact"><span>${ct ? 'Cycle time' : 'Marked at Limab'}</span><b>${ct ? fmtDuration(ct) : `${fmtDate(p.markedAt)} ${fmtTime(p.markedAt, false)}`}</b></div>
       </div>

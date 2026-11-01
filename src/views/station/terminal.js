@@ -85,8 +85,6 @@ function machineData(station, pipe) {
       return [['Max signal', `${Math.round(15 + r() * 70)} % of ref.`], ['Min wall', `${(0.45 + r() * 0.05).toFixed(3)} in`], ['Line speed', `${(0.6 + r() * 0.3).toFixed(2)} m/s`]];
     case 'PROVEUP':
       return [['SEA indication', `${Math.round(40 + r() * 50)} % of ref.`], ['Check method', r() < 0.5 ? 'MPI' : 'UT spot check'], ['Location', `${(r() * 12).toFixed(1)} m from pin end`]];
-    case 'MEASURE':
-      return [['Length', `${pipe.lengthM.toFixed(2)} m`], ['Weight', `${pipe.weightKg} kg`], ['Straightness', `${(r() * 1.2).toFixed(2)} mm/m`]];
     default:
       return [];
   }
@@ -259,7 +257,7 @@ function inspectHeadHtml(tx) {
   const data = machineData(st, p);
   return `<div class="task"><div class="task-head"><span class="task-icon info"><i class="mdi mdi-clipboard-edit-outline"></i></span>
     <div><div class="task-title">Record ${esc(st.resultLabel)}</div><div class="task-sub">OUT recorded at ${fmtTime(tx.ts)} by ${tx.method === 'AUTO' ? 'the scanner' : esc(tx.operator)} · Good or NC · sent to CTMS through CT-Track after you submit</div></div></div>
-    <div style="display:flex;gap:12px;align-items:center;flex-wrap:wrap">${pipeChip(p, { size: 'lg' })}<div class="sugg-meta"><b>${esc(pipeLabel(p))}</b><span class="mono">${esc(p.dmc)}</span></div><span class="muted" style="font-size:12px">${esc(wo ? `${wo.product.od} ${wo.product.weight} ${wo.product.grade}` : '')} · heat <span class="mono">${esc(p.heat)}</span></span></div>
+    <div style="display:flex;gap:12px;align-items:center;flex-wrap:wrap">${pipeChip(p, { size: 'lg' })}<div class="sugg-meta"><b>${esc(pipeLabel(p))}</b><span class="mono">${esc(p.dmc)}</span></div><span class="muted" style="font-size:12px">${esc(wo ? `${wo.product.od} ${wo.product.weight} ${wo.product.grade}` : '')}</span></div>
     ${data.length ? `<div class="machine-data"><div class="muted" style="font-size:11px;margin-bottom:6px">Machine data from the station PLC (simulated)</div><div class="trace-facts">${data.map(([k, v]) => `<div class="fact"><span>${esc(k)}</span><b class="mono">${esc(v)}</b></div>`).join('')}</div></div>` : ''}
   </div>`;
 }

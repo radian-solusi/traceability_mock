@@ -33,7 +33,6 @@ export function buildPayload(tx) {
     workOrder: tx.wo,
     pipeNumber: tx.pn,
     dmc: tx.dmc,
-    heatNumber: pipe?.heat ?? null,
     product: wo ? `${wo.product.od} ${wo.product.weight} ${wo.product.grade} ${wo.product.end}` : null,
     processPoint: st?.code,
     processPointName: st?.name,

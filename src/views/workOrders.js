@@ -74,7 +74,7 @@ function pipeRows() {
   return pipesOfWo(selectedWo).map((p) => {
     const tx = p.lastTxId ? getTx(p.lastTxId) : null;
     const limab = p.history.map(getTx).find((t) => t?.stationId === 'LIMAB' && t.movement === 'OUT');
-    return { id: p.id, pn: p.pn, dmc: p.dmc, heat: p.heat, lengthM: p.lengthM, weightKg: p.weightKg, flag: limab?.inspection?.result || p.limabFlag || '', flagDir: limab?.direction || '', movement: movementLabel(p), stage: p.stage, status: p.status, method: tx?.updates ? 'UPDATED' : tx?.method || '–', updated: p.lastMoveAt };
+    return { id: p.id, pn: p.pn, dmc: p.dmc, flag: limab?.inspection?.result || p.limabFlag || '', flagDir: limab?.direction || '', movement: movementLabel(p), stage: p.stage, status: p.status, method: tx?.updates ? 'UPDATED' : tx?.method || '–', updated: p.lastMoveAt };
   });
 }
 
@@ -154,9 +154,7 @@ export default {
                 columns: [
                   { id: 'pn', header: 'Pipe', width: 90, sort: 'int', template: (o) => pipeChip(getPipe(o.id), { size: 'sm' }) },
                   { id: 'dmc', header: 'DMC', width: 190, template: (o) => mono(o.dmc) },
-                  { id: 'heat', header: 'Heat', width: 80, template: (o) => mono(o.heat) },
                   { id: 'flag', header: 'Limab flag', width: 104, template: (o) => (o.flag ? `<span title="${esc(STATUS_MARKING[o.flag])}${o.flagDir ? (o.flagDir === 'LEFT' ? ' · left' : ' · right (out station)') : ' · prepared'}">${pill(o.flag)}</span>` : '<span class="muted">–</span>') },
-                  { id: 'lengthM', header: 'Length', width: 70, template: (o) => `${o.lengthM.toFixed(2)} m` },
                   { id: 'movement', header: 'Location', fillspace: 1, minWidth: 170 },
                   { id: 'status', header: 'Status', width: 92, template: (o) => pill(o.status) },
                   { id: 'method', header: 'Last ID', width: 98, template: (o) => methodBadge(o.method) },

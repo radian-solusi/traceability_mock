@@ -156,7 +156,7 @@ const CONTRACT = `<div class="prose">
 <h4>Inbound · DMC API → DTAS (UC-001)</h4>
 <pre class="json">POST /api/v1/dmc/batches            Authorization: Bearer &lt;JWT&gt;
 { "batchId": "DMC-00017", "workOrder": "WHT26121", "markedAt": "2026-10-29T09:12:00Z",
-  "pipes": [ { "pipeNumber": 1, "dmc": "WHT26121-001-H6B420", "heat": "H6B420", "lengthM": 11.92 } ] }
+  "pipes": [ { "pipeNumber": 1, "dmc": "WHT26121-001-H6B420" } ] }
 → 200 { "accepted": 6, "rejected": [ { "dmc": "…", "reason": "DUPLICATE_DMC" } ] }</pre>
 <h4>Reading · option 1: scanner → PLC → Kepware OPC UA (FR-001, main path)</h4>
 <pre class="json">subscribe ns=2;s=Siemens_TCPIP.SEA_CONC.HT_W1_SCN_01.ReadCode     (String, 100 ms)
