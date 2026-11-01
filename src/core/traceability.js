@@ -206,7 +206,7 @@ function updateExisting(tx, ev, pipe, method, actor) {
 // UC-001 Manage barcode pipe master data (DMC API; pipe information from CTMS via CT-Track)
 // ---------------------------------------------------------------------------
 /**
- * spec: { woId, salesOrder, product, qty, deadline, routeId, pipes: [{ pn, dmc? }] }  (DMC defaults to WO-PN, assumption B9)
+ * spec: { woId, product, qty, deadline, routeId, pipes: [{ pn, dmc? }] }  (DMC defaults to WO-PN, assumption B9)
  */
 export function receiveDmcBatch(spec, opts = {}) {
   const ts = opts.ts ?? now();
@@ -215,7 +215,6 @@ export function receiveDmcBatch(spec, opts = {}) {
   if (!wo) {
     wo = addWorkOrder({
       id: spec.woId,
-      salesOrder: spec.salesOrder,
       product: spec.product,
       qty: spec.qty,
       lineId: 'HT',

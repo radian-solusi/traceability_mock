@@ -152,7 +152,7 @@ function buildPlan(nowTs, rand) {
       const count = Math.min(6, wo.qty - pn + 1);
       const pipes = [];
       for (let k = 0; k < count; k++, pn++) pipes.push(pipeSpec(wo.id, wo.product, pn, rand));
-      actions.push({ ts: t, type: 'DMC', spec: { woId: wo.id, salesOrder: wo.salesOrder, product: wo.product, qty: wo.qty, deadline, pipes } });
+      actions.push({ ts: t, type: 'DMC', spec: { woId: wo.id, product: wo.product, qty: wo.qty, deadline, pipes } });
       pipes.forEach((p, k) => sim.push({ id: `${wo.id}-${pad(p.pn, 3)}`, readyAt: t, markedAt: t, order: k, step: 0, prev: 'GOOD', alive: true }));
       t += between(20, 28) * MIN;
     }
@@ -435,7 +435,7 @@ function ensureDemoState(nowTs, rand) {
     const up = db.upcoming.shift();
     if (up) {
       const pipes = Array.from({ length: 4 }, (_, k) => pipeSpec(up.id, up.product, k + 1, rand));
-      receiveDmcBatch({ woId: up.id, salesOrder: up.salesOrder, product: up.product, qty: up.qty, deadline: startOfDay(nowTs) + up.deadlineDays * 86400e3 + 17 * 3600e3, pipes }, { silent: true, ts: nowTs - 4 * MIN });
+      receiveDmcBatch({ woId: up.id, product: up.product, qty: up.qty, deadline: startOfDay(nowTs) + up.deadlineDays * 86400e3 + 17 * 3600e3, pipes }, { silent: true, ts: nowTs - 4 * MIN });
       if (up.qty > 4) db.upcoming.unshift(up);
     }
   }

@@ -442,18 +442,18 @@ export const TAGGING_MASTER = [
 
 // Work orders used to seed the plant (WHT + yy + seq, as in the mockups)
 export const SEED_WORK_ORDERS = [
-  { id: 'WHT26117', salesOrder: 'SO-26-0412', product: { type: 'Casing', od: '9 5/8"', weight: '47.0 ppf', grade: 'L80-1', end: 'BTC' }, qty: 20, startHoursAgo: 30, deadlineDays: -1 },
-  { id: 'WHT26118', salesOrder: 'SO-26-0418', product: { type: 'Casing', od: '7"', weight: '29.0 ppf', grade: 'P110', end: 'LTC' }, qty: 30, startHoursAgo: 9.5, deadlineDays: 1 },
-  { id: 'WHT26119', salesOrder: 'SO-26-0421', product: { type: 'Casing', od: '13 3/8"', weight: '68.0 ppf', grade: 'N80-Q', end: 'BTC' }, qty: 24, startHoursAgo: 4.6, deadlineDays: 3 },
-  { id: 'WHT26120', salesOrder: 'SO-26-0425', product: { type: 'Casing', od: '9 5/8"', weight: '53.5 ppf', grade: 'L80-1', end: 'BTC' }, qty: 18, startHoursAgo: 1.05, deadlineDays: 5 },
+  { id: 'WHT26117', product: { type: 'Casing', od: '9 5/8"', weight: '47.0 ppf', grade: 'L80-1', end: 'BTC' }, qty: 20, startHoursAgo: 30, deadlineDays: -1 },
+  { id: 'WHT26118', product: { type: 'Casing', od: '7"', weight: '29.0 ppf', grade: 'P110', end: 'LTC' }, qty: 30, startHoursAgo: 9.5, deadlineDays: 1 },
+  { id: 'WHT26119', product: { type: 'Casing', od: '13 3/8"', weight: '68.0 ppf', grade: 'N80-Q', end: 'BTC' }, qty: 24, startHoursAgo: 4.6, deadlineDays: 3 },
+  { id: 'WHT26120', product: { type: 'Casing', od: '9 5/8"', weight: '53.5 ppf', grade: 'L80-1', end: 'BTC' }, qty: 18, startHoursAgo: 1.05, deadlineDays: 5 },
 ];
 
 // Work orders released in CTMS but not yet marked at Limab (DMC batches arrive during the demo)
 export const UPCOMING_WORK_ORDERS = [
-  { id: 'WHT26121', salesOrder: 'SO-26-0431', product: { type: 'Tubing', od: '4 1/2"', weight: '12.6 ppf', grade: 'L80-1', end: 'EUE' }, qty: 12, deadlineDays: 6 },
-  { id: 'WHT26122', salesOrder: 'SO-26-0433', product: { type: 'Casing', od: '7"', weight: '26.0 ppf', grade: 'K55', end: 'LTC' }, qty: 16, deadlineDays: 7 },
-  { id: 'WHT26123', salesOrder: 'SO-26-0440', product: { type: 'Casing', od: '9 5/8"', weight: '47.0 ppf', grade: 'P110', end: 'BTC' }, qty: 20, deadlineDays: 8 },
-  { id: 'WHT26124', salesOrder: 'SO-26-0446', product: { type: 'Tubing', od: '3 1/2"', weight: '9.3 ppf', grade: 'J55', end: 'EUE' }, qty: 14, deadlineDays: 9 },
+  { id: 'WHT26121', product: { type: 'Tubing', od: '4 1/2"', weight: '12.6 ppf', grade: 'L80-1', end: 'EUE' }, qty: 12, deadlineDays: 6 },
+  { id: 'WHT26122', product: { type: 'Casing', od: '7"', weight: '26.0 ppf', grade: 'K55', end: 'LTC' }, qty: 16, deadlineDays: 7 },
+  { id: 'WHT26123', product: { type: 'Casing', od: '9 5/8"', weight: '47.0 ppf', grade: 'P110', end: 'BTC' }, qty: 20, deadlineDays: 8 },
+  { id: 'WHT26124', product: { type: 'Tubing', od: '3 1/2"', weight: '9.3 ppf', grade: 'J55', end: 'EUE' }, qty: 14, deadlineDays: 9 },
 ];
 
 /** Kepware item names cannot contain hyphens, so the official tag name maps to an underscore item name. */

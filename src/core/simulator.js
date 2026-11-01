@@ -244,7 +244,7 @@ export function releaseNextDmcBatch({ count = 6, actor, toast, woId, withDuplica
     if (dup) pipes.push({ pn: 900 + Math.floor(Math.random() * 99), dmc: dup.dmc });
   }
   const deadline = startOfDay() + (up.deadlineDays || 7) * 86400e3 + 17 * 3600e3;
-  const batch = receiveDmcBatch({ woId: up.id, salesOrder: up.salesOrder, product: up.product, qty: up.qty, deadline, pipes }, { actor, toast });
+  const batch = receiveDmcBatch({ woId: up.id, product: up.product, qty: up.qty, deadline, pipes }, { actor, toast });
   if (released + n >= up.qty) db.upcoming = db.upcoming.filter((w) => w.id !== up.id);
   return batch;
 }
@@ -260,7 +260,7 @@ function generateWorkOrder() {
   const all = [...db.workOrders.map((w) => w.id), ...(db.upcoming || []).map((w) => w.id)];
   const max = Math.max(...all.map((id) => Number(id.slice(-3))));
   const seq = max + 1;
-  return { id: `WHT26${String(seq).padStart(3, '0')}`, salesOrder: `SO-26-0${450 + seq}`, product: PRODUCTS[seq % PRODUCTS.length], qty: 12 + (seq % 3) * 4, deadlineDays: 7 + (seq % 4) };
+  return { id: `WHT26${String(seq).padStart(3, '0')}`, product: PRODUCTS[seq % PRODUCTS.length], qty: 12 + (seq % 3) * 4, deadlineDays: 7 + (seq % 4) };
 }
 
 /** Limab sensor: the pipe at the head of the Limab sequence leaves left or right. */

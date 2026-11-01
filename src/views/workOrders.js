@@ -19,10 +19,10 @@ const productText = (p) => (p ? `${p.od} · ${p.weight} · ${p.grade} · ${p.end
 function woRows() {
   const rows = db.workOrders.map((w) => {
     const pr = woProgress(w);
-    return { id: w.id, salesOrder: w.salesOrder, product: productText(w.product), type: w.product.type, qty: w.qty, received: pr.received, done: pr.done, pct: pr.pct, status: w.status, deadline: w.deadline, createdAt: w.createdAt };
+    return { id: w.id, product: productText(w.product), type: w.product.type, qty: w.qty, received: pr.received, done: pr.done, pct: pr.pct, status: w.status, deadline: w.deadline, createdAt: w.createdAt };
   });
   for (const u of db.upcoming || []) {
-    rows.push({ id: u.id, salesOrder: u.salesOrder, product: productText(u.product), type: u.product.type, qty: u.qty, received: 0, done: 0, pct: 0, status: 'RELEASED', deadline: null, createdAt: null });
+    rows.push({ id: u.id, product: productText(u.product), type: u.product.type, qty: u.qty, received: 0, done: 0, pct: 0, status: 'RELEASED', deadline: null, createdAt: null });
   }
   return rows.sort((a, b) => b.id.localeCompare(a.id));
 }
@@ -46,14 +46,14 @@ function detailHtml() {
   const w = getWo(selectedWo);
   const up = (db.upcoming || []).find((u) => u.id === selectedWo);
   if (!w && up) {
-    return `<div style="padding:16px;display:flex;flex-direction:column;gap:10px">${infoNote(`<b>${esc(up.id)}</b> is released in CTMS (${esc(up.salesOrder)}, ${up.qty} pipes, ${esc(productText(up.product))}) but no pipe has been marked at Limab yet. Pipes appear here when the robot marks them and the DMC API sends their unique numbers.`)}</div>`;
+    return `<div style="padding:16px;display:flex;flex-direction:column;gap:10px">${infoNote(`<b>${esc(up.id)}</b> is released in CTMS (${up.qty} pipes, ${esc(productText(up.product))}) but no pipe has been marked at Limab yet. Pipes appear here when the robot marks them and the DMC API sends their unique numbers.`)}</div>`;
   }
   const pr = woProgress(w);
   const finished = pipesOfWo(w.id).filter((p) => p.stage === STAGE.FINISHED);
   const cts = finished.map(cycleTimeMs).filter(Boolean);
   const avg = cts.length ? cts.reduce((a, b) => a + b, 0) / cts.length : null;
   return `<div style="padding:14px 16px;display:flex;flex-direction:column;gap:12px">
-    <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap"><span class="sec-name" style="font-size:22px">${esc(w.id)}</span>${woStatus(w.status)}<span class="muted">${esc(w.salesOrder)} · ${esc(w.product.type)} ${esc(productText(w.product))}</span></div>
+    <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap"><span class="sec-name" style="font-size:22px">${esc(w.id)}</span>${woStatus(w.status)}<span class="muted">${esc(w.product.type)} ${esc(productText(w.product))}</span></div>
     <div class="trace-facts">
       <div class="fact"><span>Quantity</span><b>${w.qty} pipes</b></div>
       <div class="fact"><span>Marked (DMC)</span><b>${pr.received} / ${w.qty}</b></div>
@@ -123,7 +123,7 @@ export default {
             select: 'row',
             rowHeight: 58,
             columns: [
-              { id: 'id', header: 'Work order', width: 104, template: (o) => `<div style="line-height:1.35;padding-top:8px"><span class="mono" style="font-weight:600">${esc(o.id)}</span><br><span class="muted" style="font-size:11.5px">${esc(o.salesOrder)}</span></div>` },
+              { id: 'id', header: 'Work order', width: 104, template: (o) => `<span class="mono" style="font-weight:600">${esc(o.id)}</span>` },
               { id: 'product', header: 'Product', fillspace: 1, minWidth: 150, template: (o) => `<div style="line-height:1.35;padding-top:8px">${esc(o.type)}<br><span class="muted" style="font-size:11.5px">${esc(o.product)}</span></div>` },
               { id: 'pct', header: 'Progress', width: 118, template: (o) => `<div style="padding-top:14px;line-height:1.2">${progressBar(o.pct, 'good')}<div class="muted" style="font-size:11.5px;margin-top:4px">${o.done}/${o.qty} done</div></div>` },
               { id: 'status', header: 'Status', width: 98, template: (o) => `<div style="padding-top:17px">${woStatusShort(o.status)}</div>` },
@@ -170,7 +170,7 @@ export default {
 
     function filterWo() {
       const q = (webix.$$('wo-search')?.getValue() || '').trim().toLowerCase();
-      webix.$$('wo-list')?.filter((o) => !q || o.id.toLowerCase().includes(q) || o.salesOrder.toLowerCase().includes(q) || o.product.toLowerCase().includes(q));
+      webix.$$('wo-list')?.filter((o) => !q || o.id.toLowerCase().includes(q) || o.product.toLowerCase().includes(q));
     }
   },
 
