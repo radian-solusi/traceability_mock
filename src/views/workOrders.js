@@ -126,7 +126,7 @@ export default {
               { id: 'id', header: 'Work order', width: 104, template: (o) => `<span class="mono" style="font-weight:600">${esc(o.id)}</span>` },
               { id: 'product', header: 'Product', fillspace: 1, minWidth: 150, template: (o) => `<div style="line-height:1.35;padding-top:8px">${esc(o.type)}<br><span class="muted" style="font-size:11.5px">${esc(o.product)}</span></div>` },
               { id: 'pct', header: 'Progress', width: 118, template: (o) => `<div style="padding-top:14px;line-height:1.2">${progressBar(o.pct, 'good')}<div class="muted" style="font-size:11.5px;margin-top:4px">${o.done}/${o.qty} done</div></div>` },
-              { id: 'status', header: 'Status', width: 98, template: (o) => `<div style="padding-top:17px">${woStatusShort(o.status)}</div>` },
+              { id: 'status', header: 'Status', width: 98, template: (o) => `<div style="display:flex;align-items:center;height:100%">${woStatusShort(o.status)}</div>` },
             ],
             on: {
               onAfterSelect(id) {

@@ -1,6 +1,6 @@
 {
   "name": "ptct-traceability-mock",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "private": true,
   "description": "Front-end-only mock of the PTCT pipe traceability application (PipeTrack) - Webix UI, in-memory mock data, simulated PLC/OPC/Keyence/DMC/CTMS integrations.",
   "type": "module",

@@ -4,7 +4,7 @@ import { db, getStation, getStationBySlug } from '../core/db.js';
 import { on } from '../core/bus.js';
 import { currentUser, can, allowedStations, logout } from '../core/session.js';
 import { parseHash, navigate, getPage, allPages } from '../core/router.js';
-import { setThemePref, themePref } from '../core/theme.js';
+import { setThemePref, themePref, currentTheme } from '../core/theme.js';
 import { setAutoSim, setWatching } from '../core/simulator.js';
 import { unreadCount, markAllRead } from '../core/audit.js';
 import { unackedCount, activeAlarms } from '../core/alarms.js';
@@ -319,7 +319,7 @@ export function renderShell() {
           {
             view: 'sidebar',
             id: 'nav',
-            css: 'nav webix_dark',
+            css: currentTheme() === 'dark' ? 'nav webix_dark' : 'nav',
             width: 240,
             collapsedWidth: 56,
             data: menu,

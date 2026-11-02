@@ -150,7 +150,8 @@ export default {
                 id: 'sup-review-card',
                 title: 'Pipes to review',
                 sub: 'On hold: NC without prove-up, or Limab out station',
-                minWidth: 560,
+                minWidth: 690,
+                gravity: 1.5,
                 height: 330,
                 body: {
                   view: 'datatable',

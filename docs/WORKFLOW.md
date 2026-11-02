@@ -73,7 +73,7 @@ Any password works. *Windows sign-in* uses the Windows user configured for the s
 
 ## Things to try on a station display
 
-- **Simulator bar** (purple, dashed): make a pipe arrive or leave, read the same pipe again, force the next read to fail, or send a garbled code.
+- **Simulator bar** (light purple strip): make a pipe arrive or leave, read the same pipe again, force the next read to fail, or send a garbled code.
 - **Faults…**: switch the scanner off, take the PLC / OPC path down (option 2), take the network down (the camera stores reads), or send a duplicate DMC.
 - **Autofocus**: re-focus the scanner for the pipe size at the station.
 - **Not in list? Enter identity**: type a DMC or pick any pipe that can be at this point.
