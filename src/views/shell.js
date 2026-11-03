@@ -256,13 +256,11 @@ function buildPopups() {
 function userCardHtml() {
   const u = currentUser();
   if (!u) return '';
-  const st = u.stationId ? getStation(u.stationId)?.name : '–';
   const stations = u.stations.includes('*') ? 'All stations' : u.stations.length ? u.stations.map((s) => getStation(s)?.name).join(', ') : 'None (no station display)';
   return `<div class="user-card"><div><b>${esc(u.name)}</b><div class="muted">${esc(u.title || '')} · ${esc(u.department || '')}</div></div>
   <dl><dt>Account</dt><dd class="mono">${esc(env.ldapDomain)}\\${esc(u.username)}</dd>
   <dt>Role</dt><dd>${esc(db.roles.find((r) => r.id === u.role)?.name || u.role)}</dd>
   <dt>Stations</dt><dd>${esc(stations)}</dd>
-  <dt>Workstation</dt><dd>${esc(u.desktop || 'not bound')}${u.desktop ? ` · ${esc(st)}` : ''}</dd>
   <dt>Signed in</dt><dd>${fmtTime(u.loginAt)}</dd></dl></div>`;
 }
 
