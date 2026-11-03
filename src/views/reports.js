@@ -8,7 +8,7 @@ import { REASONS } from '../core/traceability.js';
 import { TYPE_LABEL } from '../core/ctms.js';
 import { cssVar } from '../core/theme.js';
 import { esc, fmtDateTime, fmtDuration, fmtPct, startOfDay } from '../core/format.js';
-import { card, pill, methodBadge, moveBadge, ctmsBadge, pathBadge, mono, iconButton, exportCsv, infoNote, toast } from '../ui/components.js';
+import { card, pill, methodBadge, moveBadge, ctmsBadge, pathBadge, mono, iconButton, exportCsv, downloadText, infoNote, toast } from '../ui/components.js';
 
 const state = { report: 'traceability', range: 'today', station: 'all', wo: 'all' };
 
@@ -296,14 +296,7 @@ function extractJson() {
   const r = REPORTS[state.report];
   const payload = { report: r.name, extractedAt: new Date().toISOString(), filters: { range: state.range, station: state.station === 'all' ? null : getStation(state.station)?.code, workOrder: state.wo === 'all' ? null : state.wo }, rows: currentRows };
   try {
-    const blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' });
-    const a = document.createElement('a');
-    a.href = URL.createObjectURL(blob);
-    a.download = `extract-${state.report}.json`;
-    document.body.appendChild(a);
-    a.click();
-    a.remove();
-    setTimeout(() => URL.revokeObjectURL(a.href), 2000);
+    downloadText(JSON.stringify(payload, null, 2), `extract-${state.report}.json`, 'application/json');
     toast(`Extracted ${currentRows.length} rows to extract-${state.report}.json`, 'success');
   } catch (err) {
     toast(`Extraction failed: ${err.message}`, 'error');

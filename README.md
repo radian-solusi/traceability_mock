@@ -120,5 +120,5 @@ The proposed request and response shapes are on *API synchronization → API con
 ## Notes
 
 - Target: Microsoft Edge on Windows 11 station displays (24" touch), supervisor desktops and a wall TV. Tablets work; phones are not a target.
-- CSV export and JSON extraction use the browser download; they work from `npm run dev`, the built site and the single-file demo opened from disk.
+- CSV export (comma-separated) and JSON extraction use the browser download; they work from `npm run dev`, the built site and the single-file demo opened from disk.
 - Webix Standard is GPL v3. If the delivered application is not released under the GPL, a commercial Webix licence is needed (assumption G1).

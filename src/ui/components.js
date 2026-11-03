@@ -172,13 +172,94 @@ export function confirmBox({ title, text, ok = 'Confirm', cancel = 'Cancel', dan
   return webix.confirm({ title, text, ok, cancel, css: danger ? 'confirm-danger' : '' });
 }
 
-/** Export a datatable to CSV (built into Webix; works offline). */
+// ---------------------------------------------------------------------------
+// CSV export
+// Comma-separated values per RFC 4180: "," between fields, fields that contain
+// a comma, a double quote or a line break are wrapped in double quotes (inner
+// quotes doubled), CRLF line ends. UTF-8 with a byte-order mark so Excel keeps
+// characters such as · and →. (webix.toCSV is not used: it writes tabs.)
+// ---------------------------------------------------------------------------
+export const CSV_DELIMITER = ',';
+let textTpl = null;
+
+/** Plain text of a rendered cell: tags out, entities decoded, action buttons left out. */
+export function cellText(value) {
+  if (value === null || value === undefined) return '';
+  if (typeof value !== 'string') return String(value);
+  if (!/[<&]/.test(value)) return value.replace(/\s+/g, ' ').trim();
+  textTpl = textTpl || document.createElement('template');
+  textTpl.innerHTML = value.replace(/<br\s*\/?>/gi, ' · ');
+  const root = textTpl.content;
+  root.querySelectorAll('.act').forEach((el) => el.remove());
+  root.querySelectorAll('*').forEach((el) => el.append(' ')); // keeps "PN8" and "WHT26120" in two spans apart
+  return root.textContent.replace(/\s+/g, ' ').trim();
+}
+
+/** One CSV field, quoted when it holds the delimiter, a quote, a line break or edge spaces. */
+export function csvField(value) {
+  const s = value === null || value === undefined ? '' : String(value);
+  return /[",\r\n]|^\s|\s$/.test(s) ? `"${s.replace(/"/g, '""')}"` : s;
+}
+
+/** Rows (arrays of values) to CSV text. */
+export function toCsv(rows) {
+  return rows.map((r) => r.map(csvField).join(CSV_DELIMITER)).join('\r\n') + '\r\n';
+}
+
+/** Column title for the export: header text without the filter row; '' for unlabelled (button) columns. */
+function exportHeader(col) {
+  if (col.exportHeader) return col.exportHeader;
+  return []
+    .concat(col.header ?? '')
+    .filter((h) => h !== null && h !== undefined && (typeof h !== 'object' || !h.content))
+    .map((h) => cellText(typeof h === 'object' ? h.text : h))
+    .filter(Boolean)
+    .join(' · ');
+}
+
+/**
+ * What a datatable shows, as rows of plain values (header row first): visible
+ * columns, rows in the current sort and filter. Action columns (id "actions",
+ * no header, or noExport) are left out; a column can set exportAs(item) when
+ * its cell is icons or buttons.
+ */
+export function tableRows(table) {
+  const cols = table.config.columns.filter((c) => c.id !== 'actions' && !c.noExport && table.isColumnVisible(c.id) && exportHeader(c));
+  const rows = [cols.map(exportHeader)];
+  let index = 0;
+  table.data.each((item) => {
+    rows.push(
+      cols.map((c) => {
+        if (c.exportAs) return cellText(c.exportAs(item));
+        if (typeof c.template === 'function') return cellText(c.template(item, table.type, item[c.id], c, index));
+        return cellText(c.format ? c.format(item[c.id]) : item[c.id]);
+      })
+    );
+    index += 1;
+  });
+  return rows;
+}
+
+/** Save text as a file through the browser download (works from disk too). */
+export function downloadText(text, filename, type) {
+  const blob = new Blob([text], { type });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = filename;
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  setTimeout(() => URL.revokeObjectURL(a.href), 2000);
+}
+
+/** Export a datatable to a comma-separated CSV file (works offline). */
 export function exportCsv(tableId, filename) {
   const table = webix.$$(tableId);
   if (!table) return;
+  const name = `${String(filename || 'export').replace(/[/?\\<>:*|"]/g, '')}.csv`;
   try {
-    webix.toCSV(table, { filename, ignore: { actions: true } });
-    toast(`Exported ${filename}.csv`, 'success');
+    downloadText('﻿' + toCsv(tableRows(table)), name, 'text/csv;charset=utf-8');
+    toast(`Exported ${name}`, 'success');
   } catch (err) {
     toast(`Export failed: ${err.message}`, 'error');
   }

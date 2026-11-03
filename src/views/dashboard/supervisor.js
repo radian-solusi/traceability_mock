@@ -134,7 +134,7 @@ export default {
                 { id: 'nc', header: 'NC', width: 52, css: 'num', template: (o) => (o.nc ? `<b style="color:var(--nc-deep)">${o.nc}</b>` : '0') },
                 { id: 'pending', header: 'Pending', width: 72, css: 'num' },
                 { id: 'reject', header: 'Reject', width: 64, css: 'num', template: (o) => (o.reject ? `<b style="color:var(--reject)">${o.reject}</b>` : '0') },
-                { id: 'scanner', header: 'Scanner', width: 176, template: (o) => (o.scanner === 'NONE' ? '<span class="muted">none</span>' : `${health(o.scanner)} ${o.scanner !== 'OFFLINE' ? pathBadge(o.scannerPath) : ''}`) },
+                { id: 'scanner', header: 'Scanner', width: 176, exportAs: (o) => (o.scanner === 'NONE' ? 'none' : [health(o.scanner), o.scanner !== 'OFFLINE' ? pathBadge(o.scannerPath) : ''].filter(Boolean).join(' · ')), template: (o) => (o.scanner === 'NONE' ? '<span class="muted">none</span>' : `${health(o.scanner)} ${o.scanner !== 'OFFLINE' ? pathBadge(o.scannerPath) : ''}`) },
                 { id: 'sensorFault', header: 'Sensors', width: 78, template: (o) => (o.sensorFault ? '<span class="chip chip-reject">Fault</span>' : '<span class="chip chip-good">OK</span>') },
                 { id: 'tasks', header: 'Tasks', width: 60, css: 'num', template: (o) => (o.tasks ? `<span class="chip chip-warn">${o.tasks}</span>` : '<span class="muted">0</span>') },
                 { id: 'alarms', header: 'Alarms', width: 66, css: 'num', template: (o) => (o.alarms ? `<span class="chip chip-reject">${o.alarms}</span>` : '<span class="muted">0</span>') },
