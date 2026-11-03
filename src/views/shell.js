@@ -260,14 +260,10 @@ function userCardHtml() {
   const stations = u.stations.includes('*') ? 'All stations' : u.stations.length ? u.stations.map((s) => getStation(s)?.name).join(', ') : 'None (no station display)';
   return `<div class="user-card"><div><b>${esc(u.name)}</b><div class="muted">${esc(u.title || '')} · ${esc(u.department || '')}</div></div>
   <dl><dt>Account</dt><dd class="mono">${esc(env.ldapDomain)}\\${esc(u.username)}</dd>
-  <dt>UPN</dt><dd class="mono">${esc(u.upn || '')}</dd>
-  <dt>AD group</dt><dd>${esc(u.adGroup)}</dd>
   <dt>Role</dt><dd>${esc(db.roles.find((r) => r.id === u.role)?.name || u.role)}</dd>
-  <dt>Sign-in</dt><dd>${esc(u.method || 'LDAP bind')} · password not stored</dd>
   <dt>Stations</dt><dd>${esc(stations)}</dd>
   <dt>Workstation</dt><dd>${esc(u.desktop || 'not bound')}${u.desktop ? ` · ${esc(st)}` : ''}</dd>
-  <dt>Signed in</dt><dd>${fmtTime(u.loginAt)} · ${esc(shiftOf(u.loginAt).label)}</dd>
-  <dt>JWT</dt><dd class="mono" title="${esc(u.token)}">${esc(u.token.slice(0, 26))}…</dd></dl></div>`;
+  <dt>Signed in</dt><dd>${fmtTime(u.loginAt)}</dd></dl></div>`;
 }
 
 function refreshNotifications() {
