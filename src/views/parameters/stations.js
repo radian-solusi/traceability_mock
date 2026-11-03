@@ -289,7 +289,7 @@ export default {
               { id: 'camera', header: 'Scanner', width: 116, template: (o) => mono(o.camera || '–') },
               { id: 'readPath', header: 'Reading', width: 100, template: (o) => (o.camera ? `${pathBadge(o.readPath)}${o.readMode === 'OPT2' ? ' <i class="mdi mdi-lock-outline muted" title="Forced to option 2"></i>' : ''}` : '<span class="muted">–</span>') },
               { id: 'sensors', header: 'Sensors', width: 172, template: (o) => `<span class="mono" style="font-size:11.5px">${esc(o.sensors || '–')}</span>` },
-              { id: 'active', header: 'Status', width: 70, template: (o) => `${o.active ? '<i class="mdi mdi-check-circle" style="color:var(--ok)" title="Active"></i>' : '<i class="mdi mdi-minus-circle-outline muted" title="Inactive"></i>'} ${o.dashboard ? '<i class="mdi mdi-eye-outline" style="color:var(--ok)" title="Shown on dashboards"></i>' : '<i class="mdi mdi-eye-off-outline muted" title="Hidden from dashboards"></i>'}` },
+              { id: 'active', header: 'Status', width: 70, exportAs: (o) => `${o.active ? 'Active' : 'Inactive'} · ${o.dashboard ? 'shown on dashboards' : 'hidden from dashboards'}`, template: (o) => `${o.active ? '<i class="mdi mdi-check-circle" style="color:var(--ok)" title="Active"></i>' : '<i class="mdi mdi-minus-circle-outline muted" title="Inactive"></i>'} ${o.dashboard ? '<i class="mdi mdi-eye-outline" style="color:var(--ok)" title="Shown on dashboards"></i>' : '<i class="mdi mdi-eye-off-outline muted" title="Hidden from dashboards"></i>'}` },
             ],
             on: { onItemClick: (id) => openEditor(id.row) },
           },

@@ -99,6 +99,7 @@ Status:
 | F4 | Targets: Microsoft Edge on Windows 11, 24" touch station displays, supervisor desktops, a wall TV. Tablets work; phones are not a target. | RFQ, 7061. | Open |
 | F5 | The HT plant layout is a **schematic**, not a scaled drawing. | Plant-layout slide. | Open |
 | F6 | Use-case numbers follow Rev 1 (UC-001 … UC-005); the older numbering from the first use-case screenshots is retired. | Rev 1. | Confirmed |
+| F7 | **Export format.** The *Export* button on each table writes a **CSV file, comma-delimited** (RFC 4180: fields with a comma, a quote or a line break are quoted; UTF-8 with BOM; CRLF line ends). It holds the visible columns and rows with the current sort and filter, without the button columns. The *JSON* button in Reports writes the data extraction with the filters used. | The mockups show *Export* on every table, and Rev 1 requirement 12 asks for data extraction for analysis; no file format is named. | Open |
 
 ## G. Technology
 

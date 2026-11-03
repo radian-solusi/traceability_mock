@@ -15,7 +15,11 @@ function sameRow(a, b) {
 
 export function syncTable(tableOrId, rows) {
   const table = typeof tableOrId === 'string' ? webix.$$(tableOrId) : tableOrId;
-  if (!table || !table.$view || !document.body.contains(table.$view)) return;
+  if (!table || !table.data) return;
+  // A table in a tab that is not open (a hidden multiview cell) is detached from the page.
+  // Keep its data current anyway, so it is complete when the tab opens or is exported;
+  // only the scroll and repaint steps need it on the page.
+  const onPage = !!table.$view && document.body.contains(table.$view);
   const order = table.data.order ? Array.from(table.data.order) : [];
   const sameShape = table.count() === rows.length && order.length === rows.length && rows.every((r, i) => String(order[i]) === String(r.id));
   if (sameShape) {
@@ -25,7 +29,7 @@ export function syncTable(tableOrId, rows) {
     });
     return;
   }
-  const scroll = table.getScrollState ? table.getScrollState() : null;
+  const scroll = onPage && table.getScrollState ? table.getScrollState() : null;
   const selected = table.getSelectedId ? table.getSelectedId(false, true) : null;
   table.blockEvent();
   table.clearAll();
@@ -33,6 +37,6 @@ export function syncTable(tableOrId, rows) {
   if (table.filterByAll) table.filterByAll();
   if (selected && table.exists(selected)) table.select(selected);
   table.unblockEvent();
-  if (table.refresh) table.refresh();
+  if (onPage && table.refresh) table.refresh();
   if (scroll) table.scrollTo(scroll.x, scroll.y);
 }

@@ -145,7 +145,7 @@ export default {
                         { id: 'message', header: ['Detail', { content: 'textFilter' }], fillspace: 1, minWidth: 260, template: (o) => `<span title="${esc(o.message)}">${esc(o.message)}</span>` },
                         { id: 'source', header: ['Source', { content: 'selectFilter' }], width: 150 },
                         { id: 'raisedAt', header: 'Raised', width: 110, sort: 'int', template: (o) => `<span class="mono" title="${esc(fmtAgo(o.raisedAt))}">${fmtDateTime(o.raisedAt)}</span>` },
-                        { id: 'state', header: 'State', width: 130, template: (o) => (o.state === 'ACTIVE' && canAck ? '<span class="act act-ack"><i class="mdi mdi-check"></i>Acknowledge</span>' : alarmState(o.state)) },
+                        { id: 'state', header: 'State', width: 130, exportAs: (o) => alarmState(o.state), template: (o) => (o.state === 'ACTIVE' && canAck ? '<span class="act act-ack"><i class="mdi mdi-check"></i>Acknowledge</span>' : alarmState(o.state)) },
                         { id: 'ack', header: 'Acknowledged by', width: 190, template: (o) => (o.ack ? esc(o.ack) : '<span class="muted">–</span>') },
                         { id: 'route', header: '', width: 70, template: (o) => (o.route ? '<span class="act act-open"><i class="mdi mdi-open-in-app"></i>Open</span>' : '') },
                       ],
