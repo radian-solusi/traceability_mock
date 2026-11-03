@@ -76,7 +76,6 @@ function openEditor(stationId) {
   webix.$$('station-win')?.destructor();
   const cams = [{ id: '', value: 'No scanner' }, ...db.cameras.map((c) => ({ id: c.id, value: `${c.id} · ${c.model}${c.stationId && c.stationId !== stationId ? ` (used by ${stationName(c.stationId)})` : ''}` }))];
   const concs = [{ id: '', value: 'No PLC' }, ...db.concentrators.map((c) => ({ id: c.id, value: `${c.device} · ${c.model}` }))];
-  const lines = db.lines.map((l) => ({ id: l.id, value: `${l.id} · ${l.name}${l.status !== 'ACTIVE' ? ' (planned)' : ''}` }));
   const win = webix.ui({
     view: 'window',
     id: 'station-win',
@@ -95,7 +94,6 @@ function openEditor(stationId) {
         id: 'station-form',
         elementsConfig: { labelWidth: 180 },
         elements: [
-          { view: 'richselect', name: 'lineId', label: 'Production line', options: lines, value: 'HT', disabled: !!st },
           { view: 'text', name: 'code', label: 'Process point code', placeholder: 'e.g. HT-08', disabled: !!st, required: true },
           { view: 'text', name: 'name', label: 'Station name', placeholder: 'e.g. Drift test', required: true },
           { view: 'text', name: 'area', label: 'Area', placeholder: 'e.g. Drift bench 2' },
@@ -137,7 +135,6 @@ function openEditor(stationId) {
   });
   if (st) {
     webix.$$('station-form').setValues({
-      lineId: st.lineId || 'HT',
       code: st.code,
       name: st.name,
       area: st.area,
